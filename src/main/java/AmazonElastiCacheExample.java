@@ -65,6 +65,17 @@ public class AmazonElastiCacheExample {
         System.out.println("CacheEngineVersions: " + client.describeCacheEngineVersions());
 
         List<CacheCluster> cacheClusters = clusterResult.getCacheClusters();
+
+        System.out.println("describeCacheParameterGroups : " + client.describeCacheParameterGroups());
+        System.out.println("describeCacheSecurityGroups : " + client.describeCacheSecurityGroups());
+        System.out.println("describeCacheSubnetGroups : " + client.describeCacheSubnetGroups());
+        System.out.println("describeCacheParameters : " + client.describeCacheParameters(new DescribeCacheParametersRequest()));
+        System.out.println("describeEngineDefaultParameters : " + client.describeEngineDefaultParameters(new DescribeEngineDefaultParametersRequest()));
+        System.out.println("describeReservedCacheNodesOfferings : " + client.describeReservedCacheNodesOfferings());
+        System.out.println("describeReplicationGroups : " + client.describeReplicationGroups());
+        System.out.println("describeSnapshots : " + client.describeSnapshots());
+        System.out.println("describeEvents : " + client.describeEvents());
+
         System.out.println("About to enter for loop now, cacheClusters.size() = " + cacheClusters.size());
         Set<HostAndPort> jedisClusterNode = new HashSet<HostAndPort>();
 
