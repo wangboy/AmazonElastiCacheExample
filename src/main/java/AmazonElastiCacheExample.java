@@ -74,7 +74,7 @@ public class AmazonElastiCacheExample {
                 jedisClusterNode.add(new HostAndPort(addr, port));
 
                 try {
-                    Jedis jedis = new Jedis(url);
+                    Jedis jedis = new Jedis(addr, port);
                     jedis.getClient().setPassword("Adddeuuria88888888");
                     System.out.println("Connection to server sucessfully");
                     // check whether server is running or not
@@ -86,7 +86,11 @@ public class AmazonElastiCacheExample {
             }
         }
 
-        System.out.println(" all node : " + jedisClusterNode);
+        System.out.println("======= all node : ");
+        for (HostAndPort hostAndPort : jedisClusterNode) {
+            System.out.println(hostAndPort);
+        }
+        System.out.println("=======");
 
 ///////////////////////
         JedisPoolConfig config = new JedisPoolConfig();
