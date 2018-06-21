@@ -66,15 +66,26 @@ public class AmazonElastiCacheExample {
 
         List<CacheCluster> cacheClusters = clusterResult.getCacheClusters();
 
-        System.out.println("describeCacheParameterGroups : " + client.describeCacheParameterGroups());
-        System.out.println("describeCacheSecurityGroups : " + client.describeCacheSecurityGroups());
-        System.out.println("describeCacheSubnetGroups : " + client.describeCacheSubnetGroups());
-        System.out.println("describeCacheParameters : " + client.describeCacheParameters(new DescribeCacheParametersRequest()));
-        System.out.println("describeEngineDefaultParameters : " + client.describeEngineDefaultParameters(new DescribeEngineDefaultParametersRequest()));
-        System.out.println("describeReservedCacheNodesOfferings : " + client.describeReservedCacheNodesOfferings());
-        System.out.println("describeReplicationGroups : " + client.describeReplicationGroups());
-        System.out.println("describeSnapshots : " + client.describeSnapshots());
-        System.out.println("describeEvents : " + client.describeEvents());
+        for (CacheCluster cacheCluster : cacheClusters) {
+            System.out.println("cacheCluster: " + cacheCluster);
+        }
+        try {
+            System.out.println("describeCacheParameterGroups : " + client.describeCacheParameterGroups());
+            DescribeCacheSecurityGroupsRequest describeCacheSecurityGroupsRequest = new DescribeCacheSecurityGroupsRequest();
+            describeCacheSecurityGroupsRequest.setCacheSecurityGroupName("Beta");
+            System.out.println("describeCacheSecurityGroups : " + client.describeCacheSecurityGroups(describeCacheSecurityGroupsRequest));
+            DescribeCacheSubnetGroupsRequest describeCacheSubnetGroupsRequest = new DescribeCacheSubnetGroupsRequest();
+            describeCacheSubnetGroupsRequest.setCacheSubnetGroupName("beta");
+            System.out.println("describeCacheSubnetGroups : " + client.describeCacheSubnetGroups(describeCacheSubnetGroupsRequest));
+            System.out.println("describeCacheParameters : " + client.describeCacheParameters(new DescribeCacheParametersRequest()));
+            System.out.println("describeEngineDefaultParameters : " + client.describeEngineDefaultParameters(new DescribeEngineDefaultParametersRequest()));
+            System.out.println("describeReservedCacheNodesOfferings : " + client.describeReservedCacheNodesOfferings());
+            System.out.println("describeReplicationGroups : " + client.describeReplicationGroups());
+            System.out.println("describeSnapshots : " + client.describeSnapshots());
+            System.out.println("describeEvents : " + client.describeEvents());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
         System.out.println("About to enter for loop now, cacheClusters.size() = " + cacheClusters.size());
         Set<HostAndPort> jedisClusterNode = new HashSet<HostAndPort>();
