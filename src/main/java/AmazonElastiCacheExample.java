@@ -37,7 +37,7 @@ public class AmazonElastiCacheExample {
         System.out.println("Access Key: " + credentials.getAWSAccessKeyId());
         System.out.println("Secret Key: " + credentials.getAWSSecretKey());
         System.out.println("Got client, client.getEndpointPrefix() = " + client.getEndpointPrefix());
-        client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_2));
+        client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
 //		client.setRegion(Region.getRegion(Regions.EU_CENTRAL_1));
     //		client.setEndpoint("https://hermes-dev-0001-001.nquffl.0001.apn2.cache.amazonaws.com:6379");
         System.out.println("setEndpoint passed.");
