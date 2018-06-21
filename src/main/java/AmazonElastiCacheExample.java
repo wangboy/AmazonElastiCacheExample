@@ -1,11 +1,10 @@
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.elasticache.AmazonElastiCacheClient;
+import com.amazonaws.services.elasticache.AmazonElastiCacheClientBuilder;
 import com.amazonaws.services.elasticache.model.*;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
@@ -39,11 +38,20 @@ public class AmazonElastiCacheExample {
                     + "location (/Users/USERNAME/.aws/credentials), and is in valid format.", e);
         }
 
-        AmazonElastiCacheClient client = new AmazonElastiCacheClient(credentials);
+        AmazonElastiCacheClient client = (AmazonElastiCacheClient) AmazonElastiCacheClientBuilder.standard()
+                .withCredentials(new ProfileCredentialsProvider("default"))
+                .withRegion(Regions.AP_NORTHEAST_1).build();
+//        amazonElastiCache.describeReservedCacheNodes().getReservedCacheNodes()
+//        AmazonElastiCacheClientBuilder.standard().
+//        amazonElastiCache.
+
+//        AwsSyncClientParams awsSyncClientParams = new AwsSyncClientParams();
+
+//        AmazonElastiCacheClient client = new AmazonElastiCacheClient(credentials);
         System.out.println("Access Key: " + credentials.getAWSAccessKeyId());
         System.out.println("Secret Key: " + credentials.getAWSSecretKey());
         System.out.println("Got client, client.getEndpointPrefix() = " + client.getEndpointPrefix());
-        client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
+//        client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
 //		client.setRegion(Region.getRegion(Regions.EU_CENTRAL_1));
         //		client.setEndpoint("https://hermes-dev-0001-001.nquffl.0001.apn2.cache.amazonaws.com:6379");
         System.out.println("setEndpoint passed.");
