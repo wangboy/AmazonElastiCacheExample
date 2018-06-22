@@ -5,14 +5,11 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.elasticache.AmazonElastiCacheClient;
 import com.amazonaws.services.elasticache.AmazonElastiCacheClientBuilder;
 import com.amazonaws.services.elasticache.model.*;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This is a simple program to work with AmazonElastiCache on AWS.
@@ -71,19 +68,51 @@ public class AmazonElastiCacheExample {
         }
         try {
             System.out.println("describeCacheParameterGroups : " + client.describeCacheParameterGroups());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             DescribeCacheSecurityGroupsRequest describeCacheSecurityGroupsRequest = new DescribeCacheSecurityGroupsRequest();
             describeCacheSecurityGroupsRequest.setCacheSecurityGroupName("Beta");
             System.out.println("describeCacheSecurityGroups : " + client.describeCacheSecurityGroups(describeCacheSecurityGroupsRequest));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             DescribeCacheSubnetGroupsRequest describeCacheSubnetGroupsRequest = new DescribeCacheSubnetGroupsRequest();
             describeCacheSubnetGroupsRequest.setCacheSubnetGroupName("beta");
             System.out.println("describeCacheSubnetGroups : " + client.describeCacheSubnetGroups(describeCacheSubnetGroupsRequest));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             System.out.println("describeCacheParameters : " + client.describeCacheParameters(new DescribeCacheParametersRequest()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             System.out.println("describeEngineDefaultParameters : " + client.describeEngineDefaultParameters(new DescribeEngineDefaultParametersRequest()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             System.out.println("describeReservedCacheNodesOfferings : " + client.describeReservedCacheNodesOfferings());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             System.out.println("describeReplicationGroups : " + client.describeReplicationGroups());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             System.out.println("describeSnapshots : " + client.describeSnapshots());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             System.out.println("describeEvents : " + client.describeEvents());
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -105,7 +134,7 @@ public class AmazonElastiCacheExample {
 
                 try {
                     Jedis jedis = new Jedis(addr, port);
-                    jedis.getClient().setPassword("Adddeuuria88888888");
+//                    jedis.getClient().setPassword("Adddeuuria88888888");
                     System.out.println("Connection to server sucessfully");
                     // check whether server is running or not
                     System.out.println("Server is running: " + jedis.ping());
@@ -130,10 +159,62 @@ public class AmazonElastiCacheExample {
         config.setMaxIdle(2);
         //集群结点
         //        JedisCluster jc = new JedisCluster(jedisClusterNode, config);
-        JedisCluster jcd = new JedisCluster(jedisClusterNode, 5, 5,
-                5, "Adddeuuria88888888", config);
-        jcd.set("name", "zhangsan");
-        String value = jcd.get("name");
-        System.out.println(value);
+//        JedisCluster jcd = new JedisCluster(jedisClusterNode, 5, 5,
+//                5, "Adddeuuria88888888", config);
+
+        final JedisCluster jcd = new JedisCluster(jedisClusterNode, 5, 5,
+                5, config);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+
+        final Random r = new Random();
+        for (int i = 0; i < 1000000; i++) {
+            executorService.submit(new Runnable() {
+                public void run() {
+                    long rl = r.nextLong();
+                    jcd.set("key_" + rl, "value" + rl);
+                }
+            });
+
+            if (i % 1000 == 0) {
+                System.out.println(" index " + i);
+                Map<String, JedisPool> clusterNodes = jcd.getClusterNodes();
+                for (Map.Entry<String, JedisPool> entry : clusterNodes.entrySet()) {
+                    JedisPool value = entry.getValue();
+                    System.out.println(executorService.toString());
+                    System.out.println("JedisPool : " + value + " : " +
+                            + value.getNumActive() + " : " + value.getNumIdle() + " : " + value.getNumWaiters());
+                }
+            }
+        }
+
+        executorService.shutdown();
+
+        while(!executorService.isTerminated()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(executorService.toString());
+
+            Map<String, JedisPool> clusterNodes = jcd.getClusterNodes();
+            for (Map.Entry<String, JedisPool> entry : clusterNodes.entrySet()) {
+                JedisPool value = entry.getValue();
+                System.out.println(executorService.toString());
+                System.out.println("JedisPool : " + value + " : " +
+                        + value.getNumActive() + " : " + value.getNumIdle() + " : " + value.getNumWaiters());
+            }
+        }
+
+
+
+        //
+//
+//        jcd.set("name", "zhangsan");
+//        String value = jcd.get("name");
+//        System.out.println(value);
+
+//        jcd.close();
     }
 }
