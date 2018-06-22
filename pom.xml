@@ -52,9 +52,16 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->
+        <!--<dependency>-->
+            <!--<groupId>com.amazonaws</groupId>-->
+            <!--<artifactId>aws-java-sdk</artifactId>-->
+            <!--<version>1.11.349</version>-->
+        <!--</dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-elasticache -->
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
+            <artifactId>aws-java-sdk-elasticache</artifactId>
             <version>1.11.349</version>
         </dependency>
 
